@@ -1,6 +1,10 @@
 # Riemannian Block Coordinate Descent for computing PRW.
 
-To run 
+See details in our paper
+
+''A Riemannian Block Coordinate Descent Method for Computing the Projection Robust Wasserstein Distance'', ICML, 2021
+
+To run experiments on real dataset,
 
 exp_movie.py
 exp_mnist.py
