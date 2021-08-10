@@ -44,7 +44,7 @@ def main():
     
     d = 20 # Total dimension
     k = 2 # k* = 2 and compute SRW with k = 2
-    nb_exp = 1 # Do 500 experiments
+    nb_exp = 100 # Do 500 experiments
     ns = [25, 50, 100, 250, 500, 1000] # Compute SRW between measures with 'n' points for 'n' in 'ns'
 
     values = np.zeros((3, len(ns), nb_exp))
@@ -81,16 +81,15 @@ def main():
                 PRW1.run('RGAS', tau/eta, U0)
                 values[1, indn, t] = np.abs(8 - PRW1.get_value())
                 values_subspace[1, indn, t] = np.linalg.norm(PRW1.get_Omega() - proj)
-                
-                
-                 # Compute Wasserstein
-                algo2 = ProjectedGradientAscent(reg=eta, step_size_0=tau, max_iter=1, max_iter_sinkhorn=50, threshold=0.001, threshold_sinkhorn=1e-04, use_gpu=False)
+
+                # Compute Wasserstein
+                algo2 = ProjectedGradientAscent(reg=eta, step_size_0=tau, max_iter=1, max_iter_sinkhorn=50,
+                                                threshold=0.001, threshold_sinkhorn=1e-04, use_gpu=False)
                 W_ = SubspaceRobustWasserstein(X, Y, a, b, algo2, k=d)
                 W_.run()
                 values[2, indn, t] = np.abs(8 - W_.get_value())
                 values_subspace[2, indn, t] = np.linalg.norm(W_.get_Omega() - proj)
                 print(W_.get_value())
-
 
         with open('./results/exp1_hypercube_value.pkl', 'wb') as f:
             pickle.dump([values, values_subspace], f)
@@ -138,7 +137,7 @@ def main():
     plt.clf()
 
     plt.figure(figsize=(12, 8))
-    for t in range(2):
+    for t in range(3):
         values_subspace_mean = np.mean(values_subspace[t,:,:], axis=1)
         values_subspace_min = np.min(values_subspace[t,:,:], axis=1)
         values_subspace_10 = np.percentile(values_subspace[t,:,:], 10, axis=1)

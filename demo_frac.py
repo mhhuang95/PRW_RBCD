@@ -38,10 +38,10 @@ def InitialStiefel(d, k):
 
 if __name__ == "__main__":
     
-    d = 100 # Dimension of the Gaussians
-    n = 100 # Number of points for the empirical distributions
-    k = 3  # Order of the Wishart distribution, i.e. dimension of the support of the Gaussians
-    dim = 5
+    d = 100 # Dimension
+    n = 100 # Number of samples
+    k = 3  # Subspace dimension
+    dim = 3
     a,b,X,Y = fragmented_hypercube(n,d,dim)
     
     n_ep = 1
