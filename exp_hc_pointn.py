@@ -31,7 +31,7 @@ def fragmented_hypercube(n,d,dim):
     X = np.random.uniform(-1, 1, size=(n,d))
 
     # Second measure : fragmentation
-    Y = T(np.random.uniform(-1, 1, size=(n,d)), d, dim)
+    Y = T(X, d, dim)
     
     return a,b,X,Y
 
@@ -47,8 +47,8 @@ def main():
     nb_exp = 100 # Do 500 experiments
     ns = [25, 50, 100, 250, 500, 1000] # Compute SRW between measures with 'n' points for 'n' in 'ns'
 
-    values = np.zeros((3, len(ns), nb_exp))
-    values_subspace = np.zeros((3, len(ns), nb_exp))
+    values = np.zeros((2, len(ns), nb_exp))
+    values_subspace = np.zeros((2, len(ns), nb_exp))
 
     proj = np.zeros((d,d)) # Real optimal subspace
     proj[0,0] = 1
@@ -82,15 +82,6 @@ def main():
                 values[1, indn, t] = np.abs(8 - PRW1.get_value())
                 values_subspace[1, indn, t] = np.linalg.norm(PRW1.get_Omega() - proj)
 
-                # Compute Wasserstein
-                algo2 = ProjectedGradientAscent(reg=eta, step_size_0=tau, max_iter=1, max_iter_sinkhorn=50,
-                                                threshold=0.001, threshold_sinkhorn=1e-04, use_gpu=False)
-                W_ = SubspaceRobustWasserstein(X, Y, a, b, algo2, k=d)
-                W_.run()
-                values[2, indn, t] = np.abs(8 - W_.get_value())
-                values_subspace[2, indn, t] = np.linalg.norm(W_.get_Omega() - proj)
-                print(W_.get_value())
-
         with open('./results/exp1_hypercube_value.pkl', 'wb') as f:
             pickle.dump([values, values_subspace], f)
 
@@ -102,11 +93,11 @@ def main():
         print('n =',n,'/', np.mean(values[indn,:]), '/', np.mean(values1[indn,:]))
 
 
-    captions = ['PRW (RBCD)', 'PRW (RGAS)', 'W']
+    captions = ['PRW (RBCD)', 'PRW (RGAS)']
 
     line = ['o-', 'o--', '-']
     plt.figure(figsize=(12, 8))
-    for t in range(3):
+    for t in range(2):
         values_mean = np.mean(values[t,:,:], axis=1)
         values_min = np.min(values[t,:,:], axis=1)
         values_10 = np.percentile(values[t,:,:], 10, axis=1)
@@ -137,7 +128,7 @@ def main():
     plt.clf()
 
     plt.figure(figsize=(12, 8))
-    for t in range(3):
+    for t in range(2):
         values_subspace_mean = np.mean(values_subspace[t,:,:], axis=1)
         values_subspace_min = np.min(values_subspace[t,:,:], axis=1)
         values_subspace_10 = np.percentile(values_subspace[t,:,:], 10, axis=1)

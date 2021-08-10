@@ -26,7 +26,7 @@ def fragmented_hypercube(n,d,dim):
     X = np.random.uniform(-1, 1, size=(n,d))
 
     # Second measure : fragmentation
-    Y = T(np.random.uniform(-1, 1, size=(n,d)), d, dim)
+    Y = T(X, d, dim)
     
     return a,b,X,Y
 
